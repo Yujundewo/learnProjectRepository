@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./vue.global.js"></script>
+</head>
+<body>
+    <div id="myDiv"></div>
+    <template id="temp1">
+        <fieldset>
+            <legend>rootComp</legend>
+        </fieldset>
+        <child-comp></child-comp>
+    </template>
+    <template id="temp2">
+        <fieldset>
+            <legend>childComp</legend>
+        </fieldset>
+    </template>
+    <script>
+        const childComp={
+            template:"#temp2",
+            setup(){
+                return{
+
+                }
+            }
+        }
+        const rootComp={
+            template:"#temp1",
+            setup(){
+                return{
+
+                }
+            },
+            components:{
+                childComp
+            }
+        }
+        Vue.createApp(rootComp).mount("#myDiv")
+    </script>
+</body>
+</html>
