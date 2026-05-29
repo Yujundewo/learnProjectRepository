@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <script src="./vue.global.js"></script>
+</head>
+<body>
+    <div id="myDiv"></div>
+    <template id="root">
+        <fieldset>
+            <legend>根组件</legend>
+            {{message}}--{{step}}
+            <p>子组件的数据:{{counter}}</p>
+            <child-comp :step="step" @send="change"></child-comp>
+        </fieldset>
+    </template>
+    <template id="child">
+        <fieldset>
+            <legend>子组件</legend>
+            {{props.step}}--{{counter}}
+            <br>
+            <button @click="change">向父组件传数据</button>
+        </fieldset>
+    </template>
+    <script>
+        const childComp={
+            template:"#child",
+            setup(props,{emit}){
+                const counter=Vue.ref(0)
+                function change(){
+                    counter.value++
+                    emit("send",counter.value)
+                }
+                return{
+                    props,
+                    counter,
+                    change
+                }
+            },
+            props:{
+                step:{
+                    type:String
+                }
+            }
+        }
+        const rootComp={
+            template:"#root",
+            setup(){
+                const message=Vue.ref("hello,vue")
+                const step=Vue.ref(10)
+                const counter=Vue.ref(0)
+                function change(value){
+                    counter.value=value
+                }
+                return{
+                    message,
+                    step,
+                    counter,
+                    change
+                }
+            },
+            components:{
+                childComp
+            }
+        }
+        Vue.createApp(rootComp).mount("#myDiv")
+    </script>
+</body>
+</html>
