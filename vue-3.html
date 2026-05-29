@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./vue.global.js"></script>
+</head>
+<body>
+    <div id="myDiv"></div>
+    <template id="temp1">
+        <fieldset>
+            <legend>商品列表</legend>
+            <ul>
+                <li v-for="(good,index) in goods" :key="good.id">
+                    {{index+1}}/{{good.name}}/价格:{{good.price}}/库存:{{good.count}}
+                    <button @click="add(good.id)">选购+1</button><button @click="reduce(good.id)">选购-1</button>
+                </li>
+            </ul>
+        </fieldset>
+        <child-comp :buycar="buycar"></child-comp>
+    </template>
+    <template id="temp2">
+        <fieldset>
+            <legend>购物车</legend>
+            <ul>
+                <li v-for="item in props.buycar">
+                    {{item.name}}/{{item.price}}/{{item.count}}
+                </li>
+            </ul>
+            <p>总价:{{total}}</p>
+        </fieldset>
+    </template>
+    <script>
+        const childComp={
+            template:"#temp2",
+            setup(props){
+                const total=Vue.computed(()=>{
+                    let sum=props.buycar[0].count*props.buycar[0].price+props.buycar[1].count*props.buycar[1].price+props.buycar[2].count*props.buycar[2].price
+                    return sum
+                })
+                return{
+                    props,
+                    total
+                }
+            },
+            props:['buycar']
+        }
+        const rootComp={
+            template:"#temp1",
+            setup(){
+                const goods = Vue.ref([{ name: '键盘', price: 299, count: 12,id:1 },{ name: '鼠标', price: 199, count: 2 ,id:2},{ name: '显示器', price: 899, count: 31,id:3 },])
+                const buycar=Vue.ref([ { name: '键盘', price: 299, count: 0 ,id:1},{ name: '鼠标', price: 199, count: 0,id:2 },{ name: '显示器', price: 899, count: 0,id:3 },])
+                function add(id){
+                    if(id==goods.value[0].id){
+                        goods.value[0].count--
+                        buycar.value[0].count++
+                    }
+                    if(id==goods.value[1].id){
+                        goods.value[1].count--
+                        buycar.value[1].count++
+                    }
+                    if(id==goods.value[2].id){
+                        goods.value[2].count--
+                        buycar.value[2].count++
+                    }
+                }
+                function reduce(id){
+                    if(id==goods.value[0].id){
+                        goods.value[0].count++
+                        buycar.value[0].count--
+                    }
+                    if(id==goods.value[1].id){
+                        goods.value[1].count++
+                        buycar.value[1].count--
+                    }
+                    if(id==goods.value[2].id){
+                        goods.value[2].count++
+                        buycar.value[2].count--
+                    }
+                }
+                return{
+                    goods,
+                    buycar,
+                    add,
+                    reduce
+                }
+            },
+            components:{
+                childComp
+            }
+        }
+        Vue.createApp(rootComp).mount("#myDiv")
+    </script>
+</body>
+</html>
