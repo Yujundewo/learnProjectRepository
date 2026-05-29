@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <script src="./vue.global.js"></script>
+</head>
+<body>
+    <div id="myDiv"></div>
+    <template id="root">
+        <fieldset>
+            <legend>父组件</legend>
+            <p>这个文件练习插槽</p>
+        </fieldset>
+        <child-comp>
+            <template #default>
+                父组件向子组件的默认部分传数据<br>
+            </template>
+            <template #footer>
+                父组件向子组件的尾部传数据<br>
+            </template>
+            <template #header>
+                父组件向子组件的首部传数据<br>
+            </template>
+            <template #main="hello">
+                <hr>
+                父组件向子组件的主要部件传数据<br>
+                {{hello.text}}<br>
+                {{hello.message}}<br>
+                <hr>
+            </template>
+        </child-comp>
+    </template>
+    <template id="child">
+        <fieldset>
+            <legend>子组件</legend>
+            <slot name="header">头部<br></slot>
+            <slot name="main" :text="text" :message="message">主要部件<br></slot>
+            <slot>默认部分<br></slot>
+            <slot name="footer">尾部<br></slot>
+        </fieldset>
+    </template>
+    <script>
+        const childComp={
+            template:'#child',
+            setup(){
+                const text=Vue.ref("子组件向父组件传数据")
+                const message=Vue.ref("我是子组件")
+                return{
+                    text,
+                    message
+                }
+            }
+        }
+        const rootComp={
+            template:"#root",
+            setup(){
+                return{
+                }
+            },
+            components:{
+                childComp
+            }
+        }
+        Vue.createApp(rootComp).mount("#myDiv")
+    </script>
+</body>
+</html>
